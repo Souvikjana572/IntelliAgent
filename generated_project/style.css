@@ -1,0 +1,343 @@
+/*
+ * style.css – Visual design, theme system, layout, and responsive behavior for VividTodo
+ * -----------------------------------------------------------------------------
+ * This stylesheet provides:
+ *   • CSS custom properties for a pastel colour palette (light & dark mode)
+ *   • .theme-light and .theme-dark classes toggled on the #app element
+ *   • Global font & background using the custom properties
+ *   • Flexbox/Grid layout for header, input, filter navigation and task list
+ *   • Task item styling including drag‑handle, checkbox, text, edit/delete icons
+ *   • Animations for adding/removing tasks and drag‑and‑drop placeholder
+ *   • Responsive adjustments for screens ≤ 600px
+ *   • Focus‑visible outlines for accessibility
+ * -----------------------------------------------------------------------------
+ */
+
+/* ---------------------------------------------------------------------------
+ * 1. Colour palette – CSS custom properties (root)
+ * --------------------------------------------------------------------------- */
+:root {
+  /* Primary pastel colour */
+  --color-primary: #ffb3ba;        /* pastel red */
+  --color-primary-dark: #ff8a99;
+  --color-primary-light: #ffd1d4;
+
+  /* Secondary pastel colour */
+  --color-secondary: #bae1ff;      /* pastel blue */
+  --color-secondary-dark: #8ac4e8;
+  --color-secondary-light: #d4f0ff;
+
+  /* Accent colour (for interactive elements) */
+  --color-accent: #b5e48c;         /* pastel green */
+  --color-accent-dark: #8ac977;
+  --color-accent-light: #d4f5b5;
+
+  /* Light‑mode background and text */
+  --color-bg: #fafafa;            /* very light gray */
+  --color-bg-elevated: #ffffff;   /* cards / inputs */
+  --color-text: #333333;
+  --color-text-muted: #666666;
+
+  /* Dark‑mode overrides (will be replaced in .theme-dark) */
+  --color-bg-dark: #1e1e1e;
+  --color-bg-elevated-dark: #2b2b2b;
+  --color-text-dark: #eeeeee;
+  --color-text-muted-dark: #bbbbbb;
+
+  /* Border / shadow colour */
+  --color-border: rgba(0, 0, 0, 0.1);
+}
+
+/* Light theme – explicit class (default) */
+.theme-light {
+  --color-bg: #fafafa;
+  --color-bg-elevated: #ffffff;
+  --color-text: #333333;
+  --color-text-muted: #666666;
+  --color-border: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme – toggled via JS */
+.theme-dark {
+  --color-bg: var(--color-bg-dark);
+  --color-bg-elevated: var(--color-bg-elevated-dark);
+  --color-text: var(--color-text-dark);
+  --color-text-muted: var(--color-text-muted-dark);
+  --color-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ---------------------------------------------------------------------------
+ * 2. Global resets & base styles
+ * --------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * 3. App container – grid layout
+ * --------------------------------------------------------------------------- */
+#app {
+  width: 100%;
+  max-width: 720px;
+  background: var(--color-bg-elevated);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--color-border);
+  padding: 1.5rem 2rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Header – contains title and theme toggle button */
+#app > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#app > header h1 {
+  font-size: 1.8rem;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+#theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+/* ---------------------------------------------------------------------------
+ * 4. Input section
+ * --------------------------------------------------------------------------- */
+.task-input {
+  display: flex;
+  gap: 0.5rem;
+}
+
+#new-task {
+  flex: 1 1 auto;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+#new-task:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+#add-task {
+  padding: 0.5rem 1rem;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+#add-task:hover {
+  background: var(--color-primary-dark);
+}
+
+/* ---------------------------------------------------------------------------
+ * 5. Filters navigation
+ * --------------------------------------------------------------------------- */
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.filter-btn {
+  padding: 0.4rem 0.8rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--color-text);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.filter-btn:hover {
+  background: var(--color-bg-elevated);
+}
+
+.filter-btn.active {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  border-color: var(--color-primary);
+}
+
+/* ---------------------------------------------------------------------------
+ * 6. Task list layout
+ * --------------------------------------------------------------------------- */
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0;
+}
+
+.task-item {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.task-item:hover {
+  box-shadow: 0 2px 8px var(--color-border);
+}
+
+.task-item.dragging {
+  opacity: 0.6;
+  cursor: grabbing;
+}
+
+.drag-handle {
+  cursor: grab;
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+}
+
+.complete-toggle {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--color-accent);
+}
+
+.task-text {
+  flex: 1 1 auto;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.task-text.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.task-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  transition: color 0.2s;
+}
+
+.task-actions button:hover {
+  color: var(--color-primary);
+}
+
+/* Icons – we rely on Unicode characters inserted by JS (e.g., ✏️, 🗑️) */
+
+/* ---------------------------------------------------------------------------
+ * 7. Animations – entry & exit
+ * --------------------------------------------------------------------------- */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; height: auto; margin: 0.75rem 0; }
+  to { opacity: 0; height: 0; margin: 0; }
+}
+
+.task-item.enter {
+  animation: slideIn 0.25s ease forwards;
+}
+
+.task-item.exit {
+  animation: fadeOut 0.25s ease forwards;
+}
+
+/* ---------------------------------------------------------------------------
+ * 8. Responsive behaviour (max-width: 600px)
+ * --------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  #app {
+    padding: 1rem;
+  }
+
+  .task-input {
+    flex-direction: column;
+  }
+
+  #add-task {
+    width: 100%;
+  }
+
+  .filters {
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    flex: 1 1 30%;
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .task-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-actions {
+    justify-content: flex-end;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * 9. Focus‑visible outlines for accessibility
+ * --------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Ensure interactive elements also get the focus style when not using :focus-visible */
+button:focus,
+input:focus,
+textarea:focus,
+.task-item:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

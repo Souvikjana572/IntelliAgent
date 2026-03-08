@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VividTodo</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <noscript>Please enable JavaScript to use VividTodo.</noscript>
+  <div id="app" class="theme-light" role="region" aria-label="Vivid Todo Application">
+    <header>
+      <h1>VividTodo</h1>
+      <button id="theme-toggle" aria-label="Toggle light/dark theme">🌓</button>
+    </header>
+    <section class="task-input">
+      <input id="new-task" type="text" placeholder="What needs to be done?" autocomplete="off" aria-label="New task">
+      <button id="add-task" aria-label="Add task">Add</button>
+    </section>
+    <nav class="filters">
+      <button class="filter-btn" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="active">Active</button>
+      <button class="filter-btn" data-filter="completed">Completed</button>
+    </nav>
+    <ul id="task-list" class="task-list" role="list"></ul>
+  </div>
+
+  <template id="edit-modal-template">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+      <h2 id="edit-modal-title">Edit Task</h2>
+      <input type="text" id="edit-task-title" placeholder="Task title" aria-label="Edit task title">
+      <textarea id="edit-task-desc" placeholder="Task description" aria-label="Edit task description"></textarea>
+      <button id="save-edit">Save</button>
+      <button id="cancel-edit">Cancel</button>
+    </div>
+  </template>
+</body>
+</html>
